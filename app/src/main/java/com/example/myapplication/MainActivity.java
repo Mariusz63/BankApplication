@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.myapplication.Authentication.LoginActivity;
 import com.example.myapplication.Authentication.RegisterActivity;
 import com.example.myapplication.Database.DatabaseHelper;
 import com.example.myapplication.Models.User;
@@ -38,7 +39,8 @@ public class MainActivity extends AppCompatActivity {
         if (null != user) {
             Toast.makeText(this, "User: " + user.getFirst_name() + "logged in", Toast.LENGTH_SHORT).show();
         } else {
-            Intent intent = new Intent(this, RegisterActivity.class);
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         }
 
@@ -51,6 +53,12 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+
+    }
+}
+
+
+
 /*   for test:
      DatabaseHelper databaseHelper = new DatabaseHelper(this);
         SQLiteDatabase db = databaseHelper.getReadableDatabase();
@@ -61,5 +69,3 @@ public class MainActivity extends AppCompatActivity {
              Log.d(TAG, "onCreate: name:" + cursor.getString(cursor.getColumnIndex("name")));
         }*/
 
-    }
-}

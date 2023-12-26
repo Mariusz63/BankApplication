@@ -4,7 +4,6 @@ import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
@@ -24,8 +23,7 @@ import com.example.myapplication.MainActivity;
 import com.example.myapplication.Models.User;
 import com.example.myapplication.R;
 import com.example.myapplication.Utils;
-
-import org.w3c.dom.Text;
+import com.example.myapplication.WebsiteActivity;
 
 public class RegisterActivity extends AppCompatActivity {
     private EditText edtTxtEmail, edtTxtPasword, edtTxtAddres, edtTxtName;
@@ -65,7 +63,8 @@ public class RegisterActivity extends AppCompatActivity {
         txtLicence.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(RegisterActivity.this, WebsiteActivity.class);
+                startActivity(intent);
             }
         });
     }
@@ -287,7 +286,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         txtWarning = (TextView) findViewById(R.id.txtWarning);
         txtLogin = (TextView) findViewById(R.id.txtLogin);
-        txtLicence = (TextView) findViewById(R.id.txtLicence);
+        txtLicence = (TextView) findViewById(R.id.txtLicense);
 
         firstImage = (ImageView) findViewById(R.id.firstImage);
         secondImage = (ImageView) findViewById(R.id.secondImage);

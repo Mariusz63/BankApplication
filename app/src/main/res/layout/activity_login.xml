@@ -1,9 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Authentication.LoginActivity">
+    
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <ImageView
+            android:layout_width="300dp"
+            android:layout_height="150dp"
+            android:id="@+id/logo"
+            android:layout_centerHorizontal="true"
+            android:src="@mipmap/bank">
+        </ImageView>
+
+        <EditText
+            android:id="@+id/edtTxtEmail"
+            android:layout_width="350dp"
+            android:layout_height="70dp"
+            android:layout_below="@+id/logo"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="20dp"
+            android:hint="Email"
+            android:inputType="textEmailAddress"></EditText>
+
+        <EditText
+            android:layout_width="350dp"
+            android:layout_height="70dp"
+            android:id="@+id/edtTxtPassword"
+            android:hint="Password"
+            android:inputType="textPassword"
+            android:layout_below="@+id/edtTxtEmail"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="20dp"></EditText>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btnLogin"
+            android:text="Login"
+            android:layout_below="@+id/edtTxtPassword"
+            android:layout_marginTop="20dp"
+            android:layout_centerHorizontal="true"
+            android:background="@color/orange"></Button>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/txtWarning"
+            android:textColor="@color/red"
+            android:text="Warning"
+            android:layout_below="@+id/btnLogin"
+            android:layout_marginTop="20dp"
+            android:visibility="gone"> </TextView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Don't have account? Register from here"
+                android:textColor="@color/blue"
+                android:layout_below="@+id/txtWarning"
+                android:layout_marginTop="20dp"
+                android:id="@+id/txtRegister"
+                android:layout_centerHorizontal="true"></TextView>
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Developed by Mariusz"
+        android:textColor="@color/blue"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dp"
+        android:id="@+id/txtLicense"
+        android:textStyle="italic"></TextView>
+    
+</RelativeLayout>
