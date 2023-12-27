@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.compose.animation.core.DurationBasedAnimationSpec;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
@@ -26,10 +27,12 @@ import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.myapplication.Adapters.TransactionAdapter;
 import com.example.myapplication.Authentication.LoginActivity;
 import com.example.myapplication.Authentication.RegisterActivity;
 import com.example.myapplication.Database.DatabaseHelper;
 import com.example.myapplication.Dialogs.AddTransactionDialog;
+import com.example.myapplication.Models.Transaction;
 import com.example.myapplication.Models.User;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
@@ -37,6 +40,9 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.w3c.dom.Text;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -53,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseHelper databaseHelper;
 
     private GetAccountAmount getAccountAmount;
+    private TransactionAdapter transactionAdapter;
+    private GetTransaction getTransactions;
 
 
     @Override
@@ -80,6 +88,27 @@ public class MainActivity extends AppCompatActivity {
 
         setupAmount();
         setOnClickListeners();
+        initTransactionRecView();
+    }
+
+    private void initTransactionRecView() {
+        Log.d(TAG, "initTransactionRecView: started");
+
+        transactionAdapter = new TransactionAdapter();
+        transactionRecView.setAdapter(transactionAdapter);
+        transactionRecView.setLayoutManager(new LinearLayoutManager(this));
+
+        getTransactions();
+    }
+
+    private void getTransactions() {
+        Log.d(TAG, "getTransactions: started");
+
+        getTransactions = new GetTransaction();
+        User user = utils.isUserLoggedIn();
+        if(null!=user){
+            getTransactions.execute(user.get_id());
+        }
     }
 
     private void setOnClickListeners() {
@@ -121,12 +150,30 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
 
         setupAmount();
+        getTransactions();
     }
     @Override
     protected void onStart() {
         super.onStart();
 
         setupAmount();
+        getTransactions();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(null!=getTransactions){
+            if(getTransactions.isCancelled()){
+                getTransactions.cancel(true);
+            }
+        }
+
+        if(getAccountAmount!=null){
+            if(getAccountAmount.isCancelled()){
+                getAccountAmount.cancel(true);
+            }
+        }
     }
 
     private void setupAmount() {
@@ -181,6 +228,61 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+    private class GetTransaction extends AsyncTask<Integer, Void, ArrayList<Transaction>>{
+
+        @Override
+        protected ArrayList<Transaction> doInBackground(Integer... integers) {
+            try{
+                SQLiteDatabase db = databaseHelper.getReadableDatabase();
+                Cursor cursor = db.query("transactions", null,"user_id=?",
+                        new String[] {String.valueOf(integers[0])},null,null,"date");
+                if(null!=cursor){
+                    if(cursor.moveToFirst()){
+                        ArrayList<Transaction> transactions = new ArrayList<>();
+                        for(int i=0;i < cursor.getCount();i++){
+                            Transaction transaction = new Transaction();
+                            transaction.set_id(cursor.getInt(cursor.getColumnIndexOrThrow("_id")));
+                            transaction.setAmount(cursor.getInt(cursor.getColumnIndexOrThrow("amount")));
+                            transaction.setDate(cursor.getString(cursor.getColumnIndexOrThrow("date")));
+                            transaction.setDescription(cursor.getString(cursor.getColumnIndexOrThrow("description")));
+                            transaction.setRecipient(cursor.getString(cursor.getColumnIndexOrThrow("recipient")));
+                            transaction.setType(cursor.getString(cursor.getColumnIndexOrThrow("type")));
+                            transaction.setUser_id(cursor.getInt(cursor.getColumnIndexOrThrow("user_id")));
+                            transactions.add(transaction);
+                            cursor.moveToFirst();
+
+                        }
+                        cursor.close();
+                        db.close();
+                        return transactions;
+                    }else{
+                        cursor.close();
+                        db.close();
+                        return null;
+                    }
+                }else{
+                    db.close();
+                    return null;
+                }
+            }catch (SQLException e){
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Transaction> transactions) {
+            super.onPostExecute(transactions);
+
+            if(null!=transactions){
+                transactionAdapter.setTransactions(transactions);
+            }else{
+                transactionAdapter.setTransactions(new ArrayList<Transaction>());
+            }
+        }
+    }
+
 
     private void initBottomNavView() {
         Log.d(TAG, "initBottomNavView: started");

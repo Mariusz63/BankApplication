@@ -117,7 +117,9 @@
         android:layout_height="65dp"
         android:layout_alignParentBottom="true"
         android:background="@drawable/background_toolbar"
-        app:menu="@menu/bottom_navigation_menu" />
+        app:menu="@menu/bottom_navigation_menu"
+        app:itemTextColor="@color/bottom_nav_color"
+        app:itemIconTint="@color/bottom_nav_color"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fbAddTransaction"

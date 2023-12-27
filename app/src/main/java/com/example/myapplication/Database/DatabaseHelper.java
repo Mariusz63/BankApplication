@@ -2,8 +2,6 @@ package com.example.myapplication.Database;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.SyncRequest;
-import android.database.ContentObservable;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
@@ -50,6 +48,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         dataBase.execSQL(createItemsTable);
 
         addInitialItems(dataBase);
+        addTestTransaction(dataBase);
+    }
+
+    private void addTestTransaction(SQLiteDatabase dataBase) {
+        Log.d(TAG, "addTextTransaction: started");
+        ContentValues values = new ContentValues();
+        values.put("_id",0);
+        values.put("amount",33.3);
+        values.put("date","2023-01-11");
+        values.put("type","shopping");
+        values.put("user_id",1);
+        values.put("description","The best phone ever");
+        values.put("recipient","MediaExpert");
+        long newTransactionId = dataBase.insert("transactions",null,values);
+        Log.d(TAG, "addTestTransaction: transaction id" + newTransactionId);
     }
 
     private void addInitialItems(SQLiteDatabase db){
