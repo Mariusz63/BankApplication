@@ -196,7 +196,9 @@ public class RegisterActivity extends AppCompatActivity {
             String[] names = name.split(" ");
             if(names.length >=1){
                 this.first_name = names[0];
-                for(int i=1;i<name.length();i++){
+                this.last_name = "";
+
+                for(int i=1;i<names.length;i++){
                     if (i > 1) {
                         last_name += " "+names[i];
                     }else{
@@ -204,7 +206,8 @@ public class RegisterActivity extends AppCompatActivity {
                     }
                 }
             }else{
-                this.first_name = names[0];
+                this.first_name = "";
+                this.last_name = "";
             }
         }
 
@@ -232,7 +235,7 @@ public class RegisterActivity extends AppCompatActivity {
                     if(cursor.moveToFirst()){
                         User user = new User();
                         user.set_id(cursor.getInt(cursor.getColumnIndexOrThrow("_id")));
-                        user.setEmial(cursor.getString(cursor.getColumnIndexOrThrow("email")));
+                        user.setEmail(cursor.getString(cursor.getColumnIndexOrThrow("email")));
                         user.setAddress(cursor.getString(cursor.getColumnIndexOrThrow("address")));
                         user.setFirst_name(cursor.getString(cursor.getColumnIndexOrThrow("first_name")));
                         user.setLast_name(cursor.getString(cursor.getColumnIndexOrThrow("last_name")));
@@ -264,7 +267,7 @@ public class RegisterActivity extends AppCompatActivity {
             super.onPostExecute(user);
 
             if(user != null){
-                 Toast.makeText(RegisterActivity.this, "User " + user.getEmial() + " registered successfully!",Toast.LENGTH_SHORT).show();
+                 Toast.makeText(RegisterActivity.this, "User " + user.getEmail() + " registered successfully!",Toast.LENGTH_SHORT).show();
                 Utils utils = new Utils(RegisterActivity.this);
                 utils.addUserToSharedPreferences(user);
                 Intent intent = new Intent(RegisterActivity.this, MainActivity.class);

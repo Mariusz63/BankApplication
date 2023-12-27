@@ -2,7 +2,7 @@ package com.example.myapplication.Models;
 
 public class User {
     private int _id;
-    private String emial;
+    private String email;
     private String password;
     private String first_name;
     private String last_name;
@@ -12,7 +12,7 @@ public class User {
 
     public User(int _id, String emial, String password, String first_name, String last_name, String address, String image_url, double remained_amount) {
         this._id = _id;
-        this.emial = emial;
+        this.email = emial;
         this.password = password;
         this.first_name = first_name;
         this.last_name = last_name;
@@ -32,12 +32,12 @@ public class User {
         this._id = _id;
     }
 
-    public String getEmial() {
-        return emial;
+    public String getEmail() {
+        return email;
     }
 
-    public void setEmial(String emial) {
-        this.emial = emial;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() {
@@ -92,7 +92,7 @@ public class User {
     public String toString() {
         return "User{" +
                 "_id=" + _id +
-                ", emial='" + emial + '\'' +
+                ", emial='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", first_name='" + first_name + '\'' +
                 ", last_name='" + last_name + '\'' +

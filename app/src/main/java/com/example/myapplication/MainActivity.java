@@ -3,12 +3,14 @@ package com.example.myapplication;
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.compose.animation.core.DurationBasedAnimationSpec;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.content.AsyncQueryHandler;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -27,6 +29,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.myapplication.Authentication.LoginActivity;
 import com.example.myapplication.Authentication.RegisterActivity;
 import com.example.myapplication.Database.DatabaseHelper;
+import com.example.myapplication.Dialogs.AddTransactionDialog;
 import com.example.myapplication.Models.User;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
@@ -48,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private Utils utils;
     private DatabaseHelper databaseHelper;
+
+    private GetAccountAmount getAccountAmount;
 
 
     @Override
@@ -74,6 +79,54 @@ public class MainActivity extends AppCompatActivity {
         databaseHelper = new DatabaseHelper(this);
 
         setupAmount();
+        setOnClickListeners();
+    }
+
+    private void setOnClickListeners() {
+        Log.d(TAG, "setOnClickListeners: started");
+
+        txtWelcome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("YourBank")
+                        .setMessage("Created and Developed by Mariusz")
+                        .setNegativeButton("Dismiss", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        }).setPositiveButton("Visit", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent intent = new Intent(MainActivity.this, WebsiteActivity.class);
+                                startActivity(intent);
+                            }
+                        });
+                builder.show();
+            }
+        });
+
+        fbAddTransaction.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AddTransactionDialog addTransactionDialog = new AddTransactionDialog();
+                addTransactionDialog.show(getSupportFragmentManager(),"add transaction dialog");
+            }
+        });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        setupAmount();
+    }
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        setupAmount();
     }
 
     private void setupAmount() {
@@ -81,18 +134,19 @@ public class MainActivity extends AppCompatActivity {
         User user = utils.isUserLoggedIn();
 
         if(null!=user){
-
+            getAccountAmount = new GetAccountAmount();
+            getAccountAmount.execute(user.get_id());
         }
     }
 
-    private class GetAccountAmount extends AsyncTask<Intent, Void, Double> {
+    private class GetAccountAmount extends AsyncTask<Integer, Void, Double> {
 
         @Override
-        protected Double doInBackground(Intent... intents) {
+        protected Double doInBackground(Integer... integers) {
             try{
                 SQLiteDatabase db = databaseHelper.getReadableDatabase();
                 Cursor cursor = db.query("users", new String[] {"remained_amount"}, "_id=?",
-                        new String[] {String.valueOf(intents[0])},null,null,null);
+                        new String[] {String.valueOf(integers[0])},null,null,null);
 
                 if(null!=cursor){
                     if(cursor.moveToFirst()){

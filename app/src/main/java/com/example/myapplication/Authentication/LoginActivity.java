@@ -171,7 +171,7 @@ public class LoginActivity extends AppCompatActivity {
                     if(cursor.moveToFirst()){
                         User user = new User();
                         user.set_id(cursor.getInt(cursor.getColumnIndexOrThrow("_id")));
-                        user.setEmial(cursor.getString(cursor.getColumnIndexOrThrow("email")));
+                        user.setEmail(cursor.getString(cursor.getColumnIndexOrThrow("email")));
                         user.setAddress(cursor.getString(cursor.getColumnIndexOrThrow("address")));
                         user.setFirst_name(cursor.getString(cursor.getColumnIndexOrThrow("first_name")));
                         user.setLast_name(cursor.getString(cursor.getColumnIndexOrThrow("last_name")));

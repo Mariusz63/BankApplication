@@ -55,18 +55,19 @@
                     android:layout_below="@+id/firstRelLayout"
                     android:layout_marginTop="10dp">
 
-                    <com.github.mikephil.charting.charts.LineChart
-                        android:layout_width="150dp"
-                        android:layout_height="150dp"
-                        android:id="@+id/dailySpentChart"
-                        android:layout_marginLeft="20dp"/>
-
                     <com.github.mikephil.charting.charts.BarChart
                         android:layout_width="150dp"
                         android:layout_height="150dp"
+                        android:layout_alignParentRight="true"
+                        android:id="@+id/dailySpentChart"
+                        android:layout_marginRight="20dp"
+                        android:layout_toRightOf="@+id/profitChart"/>
+
+                    <com.github.mikephil.charting.charts.LineChart
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
                         android:id="@+id/profitChart"
-                        android:layout_toRightOf="@+id/dailySpentChart"
-                        android:layout_marginRight="20dp"/>
+                        android:layout_marginLeft="20dp"/>
 
                     </RelativeLayout>
 
