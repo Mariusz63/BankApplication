@@ -25,8 +25,6 @@ public class MainActivity extends AppCompatActivity {
 
     private Utils utils;
 
-    private Button btn;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,16 +41,6 @@ public class MainActivity extends AppCompatActivity {
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         }
-
-        btn = (Button) findViewById(R.id.button2);
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                utils.signOutUser();
-            }
-        });
-
-
 
     }
 }
