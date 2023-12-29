@@ -13,8 +13,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.myapplication.AddInvestmentActivity;
+import com.example.myapplication.AddLoanActivity;
 import com.example.myapplication.R;
 import com.example.myapplication.ShoppingActivity;
+import com.example.myapplication.TransferActivity;
 
 public class AddTransactionDialog extends DialogFragment {
 
@@ -52,14 +54,16 @@ public class AddTransactionDialog extends DialogFragment {
         loan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(getActivity(), AddLoanActivity.class);
+                startActivity(intent);
             }
         });
 
         transaction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(getActivity(), TransferActivity.class);
+                startActivity(intent);
             }
         });
 

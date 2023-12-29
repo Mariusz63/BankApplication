@@ -22,81 +22,81 @@
                 android:layout_height="match_parent">
 
                 <RelativeLayout
+                    android:id="@+id/firstRelLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/firstRelLayout"
                     android:layout_marginTop="10dp">
 
                     <TextView
+                        android:id="@+id/txtWelcome"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
                         android:text="Welcome to your bank!"
-                        android:textStyle="bold"
                         android:textSize="20sp"
-                        android:id="@+id/txtWelcome"
-                        android:layout_marginLeft="10dp"/>
+                        android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/txtAmount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="0.0 $"
                         android:layout_alignParentRight="true"
+                        android:layout_marginRight="10dp"
+                        android:text="0.0 $"
                         android:textColor="@color/green"
                         android:textSize="20sp"
-                        android:textStyle="bold"
-                        android:layout_marginRight="10dp"
-                        android:id="@+id/txtAmount"/>
+                        android:textStyle="bold" />
                 </RelativeLayout>
 
-                    <RelativeLayout
+                <RelativeLayout
+                    android:id="@+id/chartRelLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/chartRelLayout"
                     android:layout_below="@+id/firstRelLayout"
                     android:layout_marginTop="10dp">
 
                     <com.github.mikephil.charting.charts.BarChart
+                        android:id="@+id/dailySpentChart"
                         android:layout_width="150dp"
                         android:layout_height="150dp"
                         android:layout_alignParentRight="true"
-                        android:id="@+id/dailySpentChart"
                         android:layout_marginRight="20dp"
-                        android:layout_toRightOf="@+id/profitChart"/>
+                        android:layout_toRightOf="@+id/profitChart" />
 
                     <com.github.mikephil.charting.charts.LineChart
+                        android:id="@+id/profitChart"
                         android:layout_width="150dp"
                         android:layout_height="150dp"
-                        android:id="@+id/profitChart"
-                        android:layout_marginLeft="20dp"/>
+                        android:layout_marginLeft="20dp" />
 
-                    </RelativeLayout>
+                </RelativeLayout>
 
-                    <RelativeLayout
+                <RelativeLayout
+                    android:id="@+id/transactionRelLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/transactionRelLayout"
                     android:layout_below="@+id/chartRelLayout"
                     android:layout_marginTop="10dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Transactions"
-                    android:id="@+id/txtTransaction"
-                    android:textStyle="bold"
-                    android:textSize="16sp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginLeft="10dp"/>
+                    <TextView
+                        android:id="@+id/txtTransaction"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="10dp"
+                        android:text="Transactions"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/transactionRecView"
-                    android:layout_below="@+id/txtTransaction"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginLeft="10dp"/>
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/transactionRecView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/txtTransaction"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="10dp" />
 
-                    </RelativeLayout>
+                </RelativeLayout>
             </RelativeLayout>
 
         </androidx.core.widget.NestedScrollView>
@@ -104,12 +104,11 @@
     </RelativeLayout>
 
 
-
     <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/toolbar"
-        android:background="@drawable/background_toolbar"/>
+        android:background="@drawable/background_toolbar" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavView"
@@ -117,9 +116,9 @@
         android:layout_height="65dp"
         android:layout_alignParentBottom="true"
         android:background="@drawable/background_toolbar"
-        app:menu="@menu/bottom_navigation_menu"
+        app:itemIconTint="@color/bottom_nav_color"
         app:itemTextColor="@color/bottom_nav_color"
-        app:itemIconTint="@color/bottom_nav_color"/>
+        app:menu="@menu/bottom_navigation_menu" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fbAddTransaction"

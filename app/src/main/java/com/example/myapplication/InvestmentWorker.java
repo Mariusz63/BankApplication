@@ -55,16 +55,16 @@ public class InvestmentWorker extends Worker {
            long id = db.insert("transactions", null,values);
 
            if(id!=-1){
-               Cursor cursor = db.query("users", new String[] {"remained_amunt"}, "id=?", new String[] {String.valueOf(user_id)}, null,null,null);
+               Cursor cursor = db.query("users", new String[] {"remained_amount"}, "id=?", new String[] {String.valueOf(user_id)}, null,null,null);
 
                if(cursor!=null){
                    if(cursor.moveToFirst()){
                        double currentRemainedAmount = cursor.getDouble(cursor.getColumnIndexOrThrow("remained_amount"));
-                       cursor.close();
                        ContentValues newValues = new ContentValues();
                        newValues.put("remained_amount", currentRemainedAmount - amount);
                        int affectedRows = db.update("users", newValues, "_id=?", new String[] {String.valueOf(user_id)});
                        Log.d(TAG, "doInBackground: updateRows: " + affectedRows);
+                       cursor.close();
                    }else {
                        cursor.close();
                    }

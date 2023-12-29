@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AddInvestmentActivity"
+    tools:context=".AddLoanActivity"
     android:padding="10dp">
 
     <androidx.core.widget.NestedScrollView
@@ -18,10 +18,10 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/btnAddInvestment"
+                android:id="@+id/btnAddLoan"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="15dp"
-                android:text="Add Investment"
+                android:text="ADD LOAN"
                 android:layout_below="@+id/txtWarning"/>
 
 
@@ -78,8 +78,32 @@
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/initDateRelLayout"
+                android:id="@+id/monthlyPayment"
                 android:layout_below="@+id/monthlyROIRelLayout"
+                android:layout_marginTop="10dp">
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/edtTxtMonthlyPayment"
+                    android:layout_marginTop="10dp"
+                    android:hint="Monthly Payment"
+                    android:inputType="numberDecimal"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/txtMonthlyPayment"
+                    android:text="Monthly Payment"
+                    android:textStyle="bold"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/initDateRelLayout"
+                android:layout_below="@+id/monthlyPayment"
                 android:layout_marginTop="10dp">
 
                 <RelativeLayout
@@ -131,7 +155,7 @@
                     <Button
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/btnPickFinishDate"
+                        android:id="@+id/btnPickFinishDateLoan"
                         android:layout_alignParentRight="true"
                         android:layout_marginLeft="10dp"
                         android:text="Pick Date"/>
@@ -157,7 +181,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/nameRelLayout"
-                android:layout_below="@id/txtAddInvestment"
+                android:layout_below="@id/txtAddLoan"
                 android:layout_marginTop="20dp">
 
                 <EditText
@@ -165,7 +189,7 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/edtTxtName"
                     android:layout_marginTop="5dp"
-                    android:hint="Investment name"
+                    android:hint="Loan name"
                     android:layout_below="@+id/txtName"/>
 
                 <TextView
@@ -189,12 +213,12 @@
                 android:visibility="gone"/>
 
             <TextView
-                android:id="@+id/txtAddInvestment"
+                android:id="@+id/txtAddLoan"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="20dp"
-                android:text="Add Investment"
+                android:text="Add Loan"
                 android:textSize="20sp"
                 android:textStyle="bold" />
 

@@ -50,10 +50,8 @@ public class ShoppingActivity extends AppCompatActivity implements ItemsAdapter.
     private Button btnPickItem, btnPickDate, btnAdd;
     private EditText edtTxtDate, edtTxtDesc, edtTxtItemPrice, edtTxtStore;
     private RelativeLayout itemRelLayout;
-
     private Item selectedItem;
     private DatabaseHelper databaseHelper;
-
     private AddShopping addShopping;
 
     @Override
@@ -108,7 +106,6 @@ public class ShoppingActivity extends AppCompatActivity implements ItemsAdapter.
         if(selectedItem!=null){
             if(!edtTxtItemPrice.getText().toString().equals("")){
                 if(!edtTxtItemPrice.getText().toString().equals("")){
-                    //TODO: execute
                     addShopping = new AddShopping();
                     addShopping.execute();
                 }else{
@@ -162,7 +159,7 @@ public class ShoppingActivity extends AppCompatActivity implements ItemsAdapter.
             Utils utils = new Utils(ShoppingActivity.this);
             loggedInUser = utils.isUserLoggedIn();
             this.date = edtTxtDate.getText().toString();
-            this.price = Double.valueOf(edtTxtItemPrice.getText().toString());
+            this.price = -Double.valueOf(edtTxtItemPrice.getText().toString());
             this.store = edtTxtStore.getText().toString();
             this.description=edtTxtDesc.getText().toString();
 
@@ -173,9 +170,7 @@ public class ShoppingActivity extends AppCompatActivity implements ItemsAdapter.
         @Override
         protected Void doInBackground(Void... voids) {
 
-
             try{
-
                 SQLiteDatabase db = databaseHelper.getReadableDatabase();
                 ContentValues transactionValue = new ContentValues();
                 transactionValue.put("amount", price);

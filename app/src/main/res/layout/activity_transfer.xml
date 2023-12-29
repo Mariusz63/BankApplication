@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:context=".TransferActivity"
+    android:padding="10dp"
+    android:layout_margin="10dp">
+
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/amountRelLayout"
+                android:layout_marginTop="10dp">
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/edtTxtAmount"
+                    android:layout_below="@+id/txtAmount"
+                    android:layout_marginTop="10dp"
+                    android:hint="Amount"
+                    android:inputType="numberDecimal"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/txtAmount"
+                    android:text="Amount"
+                    android:textStyle="bold"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/recipientRelLayout"
+                android:layout_below="@+id/amountRelLayout"
+                android:layout_marginTop="10dp">
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/edtTxtRecipient"
+                    android:layout_below="@+id/txtRecipient"
+                    android:layout_marginTop="10dp"
+                    android:hint="Recipient" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/txtRecipient"
+                    android:text="Recipient"
+                    android:textStyle="bold"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/dateRelLayout"
+                android:layout_below="@+id/recipientRelLayout"
+                android:layout_marginTop="10dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/pickInitDateRelLayout"
+                    android:layout_below="@+id/txtDate">
+
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/btnPickDate"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginLeft="10dp"
+                        android:text="Pick Date"/>
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/edtTxtDate"
+                        android:layout_marginTop="10dp"
+                        android:hint="Date"
+                        android:layout_toLeftOf="@+id/btnPickDate"/>
+
+                </RelativeLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/txtDate"
+                    android:text="Date"
+                    android:textStyle="bold"/>
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/descriptionLinLayout"
+                android:layout_below="@+id/dateRelLayout"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/txtDescription"
+                    android:text="Description"
+                    android:textSize="16sp"
+                    android:textStyle="bold"/>
+
+                <EditText
+                    android:id="@+id/edtTxtDescription"
+                    android:layout_width="370dp"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/background_light"
+                    android:hint="Description"
+                    android:lines="3"
+                    android:padding="8dp"
+                    android:textColor="@android:color/black" />
+
+            </LinearLayout>
+
+
+            <RadioGroup
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/rgType"
+                android:padding="10dp"
+                android:orientation="horizontal"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/descriptionLinLayout">
+
+                <RadioButton
+                    android:id="@+id/btnReceive"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="Receive" />
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/btnSend"
+                    android:checked="false"
+                    android:text="Send"/>
+
+
+            </RadioGroup>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/btnAdd"
+                android:text="Add transfer"
+                android:layout_marginTop="10dp"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/rgType"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/txtWarning"
+                android:layout_below="@+id/btnAdd"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:text="Warning"
+                android:textColor="@color/colorAccent"
+                android:visibility="gone"/>
+
+        </RelativeLayout>
+    </androidx.core.widget.NestedScrollView>
+</RelativeLayout>

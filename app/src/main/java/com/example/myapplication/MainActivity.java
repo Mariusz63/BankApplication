@@ -114,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
         initBarChart();
 
         Log.d(TAG, "onCreate: work: "+ WorkManager.getInstance(this).getWorkInfosByTag("profit"));
+        Log.d(TAG, "onCreate: loan work: "+WorkManager.getInstance(this).getWorkInfosByTag("loan_payment"));
     }
 
     private void initBarChart() {
@@ -596,12 +597,13 @@ public class MainActivity extends AppCompatActivity {
                         //TODO: complete this logic
                         break;
                     case R.id.menu_item_loan:
-                        //TODO: complete this logic
-                        break;
+                        Intent loanIntent = new Intent(MainActivity.this, LoanActivity.class);
+                        loanIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(loanIntent);                        break;
                     case R.id.menu_item_investments:
-                            Intent intent = new Intent(MainActivity.this, InvestmentActivity.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(intent);
+                            Intent investmentIntent = new Intent(MainActivity.this, InvestmentActivity.class);
+                        investmentIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(investmentIntent);
                         break;
                     default:
                         break;
