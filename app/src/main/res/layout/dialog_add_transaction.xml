@@ -102,7 +102,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="10dp"
                 android:layout_toRightOf="@+id/transactionImage"
-                android:text="Shopping"
+                android:text="Send/Receive"
                 android:textSize="20dp"
                 android:textStyle="bold"/>
 

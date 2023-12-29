@@ -16,14 +16,17 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.appcompat.widget.Toolbar;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -32,17 +35,32 @@ import com.example.myapplication.Authentication.LoginActivity;
 import com.example.myapplication.Authentication.RegisterActivity;
 import com.example.myapplication.Database.DatabaseHelper;
 import com.example.myapplication.Dialogs.AddTransactionDialog;
+import com.example.myapplication.Models.Shopping;
 import com.example.myapplication.Models.Transaction;
 import com.example.myapplication.Models.User;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.w3c.dom.Text;
 
 import java.lang.reflect.Array;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -55,11 +73,13 @@ public class MainActivity extends AppCompatActivity {
     private LineChart lineChart;
     private FloatingActionButton fbAddTransaction;
     private Toolbar toolbar;
+
     private Utils utils;
     private DatabaseHelper databaseHelper;
-
     private GetAccountAmount getAccountAmount;
     private TransactionAdapter transactionAdapter;
+    private GetProfit getProfit;
+    private GetSpending getSpending;
     private GetTransaction getTransactions;
 
 
@@ -89,6 +109,31 @@ public class MainActivity extends AppCompatActivity {
         setupAmount();
         setOnClickListeners();
         initTransactionRecView();
+        initLineChart();
+        initBarChart();
+    }
+
+    private void initBarChart() {
+        Log.d(TAG, "initBarChart: started");
+
+        getSpending = new GetSpending();
+        User user = utils.isUserLoggedIn();
+
+        if(user!=null){
+            getSpending.execute(user.get_id());
+        }
+    }
+
+    private void initLineChart() {
+        Log.d(TAG, "initLineChart: started");
+
+        getProfit = new GetProfit();
+        User user = utils.isUserLoggedIn();
+
+        if (null != user) {
+            getProfit.execute(user.get_id());
+        }
+
     }
 
     private void initTransactionRecView() {
@@ -106,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
 
         getTransactions = new GetTransaction();
         User user = utils.isUserLoggedIn();
-        if(null!=user){
+        if (null != user) {
             getTransactions.execute(user.get_id());
         }
     }
@@ -140,7 +185,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 AddTransactionDialog addTransactionDialog = new AddTransactionDialog();
-                addTransactionDialog.show(getSupportFragmentManager(),"add transaction dialog");
+                addTransactionDialog.show(getSupportFragmentManager(), "add transaction dialog");
             }
         });
     }
@@ -151,27 +196,44 @@ public class MainActivity extends AppCompatActivity {
 
         setupAmount();
         getTransactions();
+        initLineChart();
+        initBarChart();
     }
+
     @Override
     protected void onStart() {
         super.onStart();
 
         setupAmount();
         getTransactions();
+        initLineChart();
+        initBarChart();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(null!=getTransactions){
-            if(getTransactions.isCancelled()){
+        if (null != getTransactions) {
+            if (!getTransactions.isCancelled()) {
                 getTransactions.cancel(true);
             }
         }
 
-        if(getAccountAmount!=null){
-            if(getAccountAmount.isCancelled()){
+        if (getAccountAmount != null) {
+            if (!getAccountAmount.isCancelled()) {
                 getAccountAmount.cancel(true);
+            }
+        }
+
+        if (getProfit != null) {
+            if (!getProfit.isCancelled()) {
+                getProfit.cancel(true);
+            }
+        }
+
+        if (getSpending != null) {
+            if (!getSpending.isCancelled()) {
+                getSpending.cancel(true);
             }
         }
     }
@@ -180,7 +242,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "setupAmount: started");
         User user = utils.isUserLoggedIn();
 
-        if(null!=user){
+        if (null != user) {
             getAccountAmount = new GetAccountAmount();
             getAccountAmount.execute(user.get_id());
         }
@@ -190,27 +252,27 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected Double doInBackground(Integer... integers) {
-            try{
+            try {
                 SQLiteDatabase db = databaseHelper.getReadableDatabase();
-                Cursor cursor = db.query("users", new String[] {"remained_amount"}, "_id=?",
-                        new String[] {String.valueOf(integers[0])},null,null,null);
+                Cursor cursor = db.query("users", new String[]{"remained_amount"}, "_id=?",
+                        new String[]{String.valueOf(integers[0])}, null, null, null);
 
-                if(null!=cursor){
-                    if(cursor.moveToFirst()){
+                if (null != cursor) {
+                    if (cursor.moveToFirst()) {
                         double amount = cursor.getDouble(cursor.getColumnIndexOrThrow("remained_amount"));
                         cursor.close();
                         db.close();
-                        return  amount;
-                    }else {
+                        return amount;
+                    } else {
                         cursor.close();
                         db.close();
                         return null;
                     }
-                }else {
+                } else {
                     db.close();
                     return null;
                 }
-            }catch (SQLException e){
+            } catch (SQLException e) {
                 e.printStackTrace();
                 return null;
 
@@ -221,51 +283,51 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(Double aDouble) {
             super.onPostExecute(aDouble);
 
-            if(aDouble!=null){
-                txtAmount.setText(String.valueOf(aDouble)+" $");
-            }else {
+            if (aDouble != null) {
+                txtAmount.setText(aDouble + " $");
+            } else {
                 txtAmount.setText("0.0 $");
             }
         }
     }
 
-    private class GetTransaction extends AsyncTask<Integer, Void, ArrayList<Transaction>>{
+    private class GetTransaction extends AsyncTask<Integer, Void, ArrayList<Transaction>> {
 
         @Override
         protected ArrayList<Transaction> doInBackground(Integer... integers) {
-            try{
+            try {
                 SQLiteDatabase db = databaseHelper.getReadableDatabase();
-                Cursor cursor = db.query("transactions", null,"user_id=?",
-                        new String[] {String.valueOf(integers[0])},null,null,"date");
-                if(null!=cursor){
-                    if(cursor.moveToFirst()){
+                Cursor cursor = db.query("transactions", null, "user_id=?",
+                        new String[]{String.valueOf(integers[0])}, null, null, "date DESC");
+                if (null != cursor) {
+                    if (cursor.moveToFirst()) {
                         ArrayList<Transaction> transactions = new ArrayList<>();
-                        for(int i=0;i < cursor.getCount();i++){
+                        for (int i = 0; i < cursor.getCount(); i++) {
                             Transaction transaction = new Transaction();
                             transaction.set_id(cursor.getInt(cursor.getColumnIndexOrThrow("_id")));
-                            transaction.setAmount(cursor.getInt(cursor.getColumnIndexOrThrow("amount")));
+                            transaction.setAmount(cursor.getDouble(cursor.getColumnIndexOrThrow("amount")));
                             transaction.setDate(cursor.getString(cursor.getColumnIndexOrThrow("date")));
                             transaction.setDescription(cursor.getString(cursor.getColumnIndexOrThrow("description")));
                             transaction.setRecipient(cursor.getString(cursor.getColumnIndexOrThrow("recipient")));
                             transaction.setType(cursor.getString(cursor.getColumnIndexOrThrow("type")));
                             transaction.setUser_id(cursor.getInt(cursor.getColumnIndexOrThrow("user_id")));
                             transactions.add(transaction);
-                            cursor.moveToFirst();
+                            cursor.moveToNext();
 
                         }
                         cursor.close();
                         db.close();
                         return transactions;
-                    }else{
+                    } else {
                         cursor.close();
                         db.close();
                         return null;
                     }
-                }else{
+                } else {
                     db.close();
                     return null;
                 }
-            }catch (SQLException e){
+            } catch (SQLException e) {
                 e.printStackTrace();
                 return null;
             }
@@ -275,10 +337,239 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(ArrayList<Transaction> transactions) {
             super.onPostExecute(transactions);
 
-            if(null!=transactions){
+            if (null != transactions) {
                 transactionAdapter.setTransactions(transactions);
-            }else{
+            } else {
                 transactionAdapter.setTransactions(new ArrayList<Transaction>());
+            }
+        }
+    }
+
+    private class GetProfit extends AsyncTask<Integer, Void, ArrayList<Transaction>> {
+        @Override
+        protected ArrayList<Transaction> doInBackground(Integer... integers) {
+
+            try {
+                SQLiteDatabase db = databaseHelper.getReadableDatabase();
+                Cursor cursor = db.query("transactions", null, "user_id=? AND type=?",
+                        new String[]{String.valueOf(integers[0]), "profit"}, null, null, null);
+
+                if (null != cursor) {
+                    if (cursor.moveToFirst()) {
+                        ArrayList<Transaction> transactions = new ArrayList<>();
+                        for (int i = 0; i < cursor.getCount(); i++) {
+                            Transaction transaction = new Transaction();
+                            transaction.set_id(cursor.getInt(cursor.getColumnIndexOrThrow("_id")));
+                            transaction.setAmount(cursor.getDouble(cursor.getColumnIndexOrThrow("amount")));
+                            transaction.setDate(cursor.getString(cursor.getColumnIndexOrThrow("date")));
+                            transaction.setDescription(cursor.getString(cursor.getColumnIndexOrThrow("description")));
+                            transaction.setRecipient(cursor.getString(cursor.getColumnIndexOrThrow("recipient")));
+                            transaction.setType(cursor.getString(cursor.getColumnIndexOrThrow("type")));
+                            transaction.setUser_id(cursor.getInt(cursor.getColumnIndexOrThrow("user_id")));
+                            transactions.add(transaction);
+                            cursor.moveToNext();
+
+                        }
+                        cursor.close();
+                        db.close();
+                        return transactions;
+                    } else {
+                        cursor.close();
+                        db.close();
+                        return null;
+                    }
+                } else {
+                    db.close();
+                    return null;
+                }
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+                return null;
+
+            }
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Transaction> transactions) {
+            super.onPostExecute(transactions);
+
+            //there we have a array list of entries
+            if (null != transactions) {
+                ArrayList<Entry> entries = new ArrayList<>();
+
+                for (Transaction t : transactions) {
+                    try {
+                        String dateString = t.getDate();
+
+                        // Check if the date string is not empty and has the expected format
+                        if (dateString != null && dateString.matches("\\d{4}-\\d{2}-\\d{2}")) {
+                            Date date = new SimpleDateFormat("yyyy-MM-dd").parse(dateString);
+
+                            Calendar calendar = Calendar.getInstance();
+                            int year = calendar.get(Calendar.YEAR);
+                            calendar.setTime(date);
+                            int month = calendar.get(Calendar.MONTH) + 1;
+                            Log.d(TAG, "onPostExecute: month: " + month);
+
+                            if (calendar.get(Calendar.YEAR) == year) {
+                                boolean doesMonthExist = false;
+
+                                for (Entry e : entries) {
+                                    if (e.getX() == month) {
+                                        doesMonthExist = true;
+                                        break; // Exit the loop once a matching month is found
+                                    }
+                                }
+
+                                if (!doesMonthExist) {
+                                    entries.add(new Entry(month, (float) t.getAmount()));
+                                } else {
+                                    for (Entry e : entries) {
+                                        if (e.getX() == month) {
+                                            e.setY(e.getY() + (float) t.getAmount());
+                                        }
+                                    }
+                                }
+                            }
+                        } else {
+                            Log.e(TAG, "Invalid date format: " + dateString);
+                        }
+
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                for(Entry e: entries){
+                    Log.d(TAG, "onPostExecute: x:" + e.getX() + "y: "+e.getY());
+                }
+
+                LineDataSet dataSet = new LineDataSet(entries, "Profit chart");
+                dataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
+                dataSet.setDrawFilled(false);
+                LineData data = new LineData(dataSet);
+
+                XAxis xAxis = lineChart.getXAxis();
+                xAxis.setSpaceMin(1);
+                xAxis.setSpaceMax(1);
+                xAxis.setAxisMaximum(12);
+                xAxis.setEnabled(false);
+                YAxis yAxis = lineChart.getAxisRight();
+                yAxis.setEnabled(true);
+                YAxis leftAxis = lineChart.getAxisLeft();
+                leftAxis.setAxisMinimum(0);
+                leftAxis.setDrawGridLines(false);
+
+                Description description = new Description();
+                description.setText("Your profit");
+                lineChart.setDescription(description);
+                lineChart.setData(data);
+                lineChart.invalidate();
+
+            } else {
+                Log.d(TAG, "onPostExecute: transactions array list was null");
+            }
+        }
+    }
+
+    private class GetSpending extends AsyncTask<Integer, Void, ArrayList<Shopping>>{
+
+        @Override
+        protected ArrayList<Shopping> doInBackground(Integer... integers) {
+            try {
+                SQLiteDatabase db = databaseHelper.getReadableDatabase();
+                Cursor cursor = db.query("shopping",new String[] {"date", "price"}, "user_id=?",
+                        new String[] {String.valueOf(integers[0])},null,null,null);
+
+                if(cursor!=null){
+                    if(cursor.moveToFirst()){
+                        ArrayList<Shopping> shoppings=new ArrayList<>();
+
+                        for(int i = 0;i<cursor.getCount();i++){
+                            Shopping shopping = new Shopping();
+                            shopping.setDate(cursor.getString(cursor.getColumnIndexOrThrow("date")));
+                            shopping.setPrice(cursor.getDouble(cursor.getColumnIndexOrThrow("price")));
+                            shoppings.add(shopping);
+                            cursor.moveToNext();
+                        }
+
+                        cursor.close();
+                        db.close();
+                        return shoppings;
+
+                    }else{
+                        cursor.close();
+                        db.close();
+                        return null;
+                    }
+                }else{
+                    db.close();
+                    return null;
+                }
+
+            }catch (SQLException e){
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Shopping> shoppings) {
+            super.onPostExecute(shoppings);
+
+            if(shoppings!=null){
+
+                ArrayList<BarEntry> entries = new ArrayList<>();
+                for(Shopping s: shoppings ){
+                    try {
+                        Date date = new SimpleDateFormat("yyyy-MM-dd").parse(s.getDate());
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.setTime(date);
+                        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+                        boolean doesDayExist = false;
+
+                        for (BarEntry e : entries) {
+                            if (e.getX() == day) {
+                                doesDayExist = true;
+                                break; // Exit the loop once a matching day is found
+                            }
+                        }
+
+                        if (!doesDayExist) {
+                            entries.add(new BarEntry(day, (float) s.getPrice()));
+                        } else {
+                            for (BarEntry e : entries) {
+                                if (e.getX() == day) {
+                                    e.setY(e.getY() + (float) s.getPrice());
+                                    break; // Exit the loop once the entry is updated
+                                }
+                            }
+                        }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                BarDataSet dataSet = new BarDataSet(entries, "Shopping charts");
+                dataSet.setColor(Color.RED);
+                BarData data = new BarData(dataSet);
+
+                barChart.getAxisRight().setEnabled(false);
+                XAxis xAxis = barChart.getXAxis();
+                xAxis.setAxisMaximum(31);
+                xAxis.setAxisMinimum(1);
+                xAxis.setEnabled(false);
+
+                Description description = new Description();
+                description.setText("Your spending");
+                barChart.setDescription(description);
+                barChart.setData(data);
+                barChart.invalidate();
+
+            }else{
+                Log.d(TAG, "onPostExecute: shopping arraylist is null");
             }
         }
     }
@@ -291,7 +582,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
 
-                switch (menuItem.getItemId()){
+                switch (menuItem.getItemId()) {
                     case R.id.menu_item_stats:
                         //TODO: complete this logic
                         break;
@@ -316,7 +607,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void initView(){
+    private void initView() {
         Log.d(TAG, "initView: started");
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottomNavView);
         txtAmount = (TextView) findViewById(R.id.txtAmount);
@@ -327,9 +618,49 @@ public class MainActivity extends AppCompatActivity {
         fbAddTransaction = (FloatingActionButton) findViewById(R.id.fbAddTransaction);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_activity_toolbar_menu, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.menu_yourbank:
+                AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                        .setTitle("YourBank")
+                        .setMessage("Developed by Mariusz")
+                        .setNegativeButton("Visit", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent intent = new Intent(MainActivity.this, WebsiteActivity.class);
+                                startActivity(intent);
+                            }
+                        }).setPositiveButton("Invate friends", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                String message = "Hey, checkout this bank application?\n The best bank is YourBank.";
+
+                                Intent intent = new Intent(Intent.ACTION_SEND);
+                                intent.putExtra(Intent.EXTRA_TEXT,message);
+                                intent.setType("text/plain");
+
+                                Intent chooserIntent = Intent.createChooser(intent,"Send Message via: ");
+                                startActivity(chooserIntent);
+                            }
+                        });
+                // Show the AlertDialog
+                builder.show();
+                break;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }
-
-
 
 /*   for test:
      DatabaseHelper databaseHelper = new DatabaseHelper(this);

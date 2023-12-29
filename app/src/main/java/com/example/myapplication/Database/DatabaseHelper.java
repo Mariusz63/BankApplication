@@ -49,6 +49,63 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         addInitialItems(dataBase);
         addTestTransaction(dataBase);
+        addTestProfit(dataBase);
+        addTestShopping(dataBase);
+    }
+
+    private void addTestShopping(SQLiteDatabase dataBase) {
+        Log.d(TAG, "addTestShopping: started");
+
+        ContentValues firstValues = new ContentValues();
+        firstValues.put("item_id",1);
+        firstValues.put("transaction_id",1);
+        firstValues.put("user_id",1);
+        firstValues.put("price",69.69);
+        firstValues.put("description","some description");
+        firstValues.put("date","2023-07-19");
+        dataBase.insert("shopping",null,firstValues);
+
+        ContentValues secondValue = new ContentValues();
+        secondValue.put("item_id",1);
+        secondValue.put("transaction_id",1);
+        secondValue.put("user_id",1);
+        secondValue.put("price",69.69);
+        secondValue.put("description","some description");
+        secondValue.put("date","2023-07-19");
+        dataBase.insert("shopping",null,secondValue);
+    }
+
+    private void addTestProfit(SQLiteDatabase dataBase) {
+        Log.d(TAG, "addTestProfit: started");
+
+        ContentValues firstValues = new ContentValues();
+        firstValues.put("amount", 99.0);
+        firstValues.put("type", "profit");
+        firstValues.put("date", "2023-02-22");
+        firstValues.put("description", "Profit of work");
+        firstValues.put("user_id", 1);
+        firstValues.put("recipient", "Januszex");
+        dataBase.insert("transactions",null,firstValues);
+
+        ContentValues secondValues = new ContentValues();
+        secondValues.put("amount", 10.3);
+        secondValues.put("type", "profit");
+        secondValues.put("date", "2022-03-22");
+        secondValues.put("description", "Profit ");
+        secondValues.put("user_id", 1);
+        secondValues.put("recipient", "Januszex2");
+        dataBase.insert("transactions",null,secondValues);
+
+        ContentValues thirdValues = new ContentValues();
+        thirdValues.put("amount", 10.3);
+        thirdValues.put("type", "profit");
+        thirdValues.put("date", "2022-06-22");
+        thirdValues.put("description", "Profit ");
+        thirdValues.put("user_id", 1);
+        thirdValues.put("recipient", "Januszex3");
+        dataBase.insert("transactions",null,thirdValues);
+
+
     }
 
     private void addTestTransaction(SQLiteDatabase dataBase) {

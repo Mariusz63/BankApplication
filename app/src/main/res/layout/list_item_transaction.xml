@@ -30,7 +30,9 @@
             android:layout_marginTop="10dp"
             android:text="Description"
             android:layout_below="@+id/txtAmount"
-            android:textSize="20sp"/>
+            android:textSize="20sp"
+            android:layout_toLeftOf="@+id/txtSender"
+            android:layout_alignParentLeft="true"/>
 
         <TextView
             android:layout_width="wrap_content"

@@ -39,10 +39,10 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         Log.d(TAG, "onBindViewHolder: called");
         holder.txtDate.setText(transactions.get(position).getDate());
         holder.txtDesc.setText(transactions.get(position).getDescription());
-        holder.txtTransactionId.setText(String.valueOf(transactions.get(position).get_id())); //id is int! so convert to string
+        holder.txtTransactionId.setText(String.valueOf("Transaction Id: "+transactions.get(position).get_id())); //id is int! so convert to string
         holder.txtSender.setText(transactions.get(position).getRecipient());
-
         double amount = transactions.get(position).getAmount();
+
         if(amount>0){
             holder.txtAmount.setText("+ "+amount);
             holder.txtAmount.setTextColor(Color.GREEN);
@@ -65,8 +65,12 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
     public class ViewHolder extends RecyclerView.ViewHolder{
 
-        private TextView txtAmount, txtDesc, txtDate, txtSender, txtTransactionId;
-        private CardView parent;
+        private final TextView txtAmount;
+        private final TextView txtDesc;
+        private final TextView txtDate;
+        private final TextView txtSender;
+        private final TextView txtTransactionId;
+        private final CardView parent;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
