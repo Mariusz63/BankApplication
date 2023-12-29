@@ -50,6 +50,10 @@ android {
 
 
 dependencies {
+    val work_version = "2.9.0"
+
+    // (Java only)
+    implementation("androidx.work:work-runtime:$work_version")
     //gson library
     implementation ("com.google.code.gson:gson:2.10.1")
 

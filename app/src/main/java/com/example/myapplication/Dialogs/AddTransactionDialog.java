@@ -3,6 +3,7 @@ package com.example.myapplication.Dialogs;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -11,7 +12,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import com.example.myapplication.AddInvestmentActivity;
 import com.example.myapplication.R;
+import com.example.myapplication.ShoppingActivity;
 
 public class AddTransactionDialog extends DialogFragment {
 
@@ -33,6 +36,16 @@ public class AddTransactionDialog extends DialogFragment {
             @Override
             public void onClick(View v) {
                 //TODO: navigate user to the activity
+                Intent intent = new Intent(getActivity(), ShoppingActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        investment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), AddInvestmentActivity.class);
+                startActivity(intent);
             }
         });
 

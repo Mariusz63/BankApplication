@@ -29,6 +29,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.work.WorkManager;
 
 import com.example.myapplication.Adapters.TransactionAdapter;
 import com.example.myapplication.Authentication.LoginActivity;
@@ -111,6 +112,8 @@ public class MainActivity extends AppCompatActivity {
         initTransactionRecView();
         initLineChart();
         initBarChart();
+
+        Log.d(TAG, "onCreate: work: "+ WorkManager.getInstance(this).getWorkInfosByTag("profit"));
     }
 
     private void initBarChart() {
@@ -596,7 +599,9 @@ public class MainActivity extends AppCompatActivity {
                         //TODO: complete this logic
                         break;
                     case R.id.menu_item_investments:
-                        //TODO: complete this logic
+                            Intent intent = new Intent(MainActivity.this, InvestmentActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
                         break;
                     default:
                         break;
@@ -639,7 +644,7 @@ public class MainActivity extends AppCompatActivity {
                                 Intent intent = new Intent(MainActivity.this, WebsiteActivity.class);
                                 startActivity(intent);
                             }
-                        }).setPositiveButton("Invate friends", new DialogInterface.OnClickListener() {
+                        }).setPositiveButton("Invite friends", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 String message = "Hey, checkout this bank application?\n The best bank is YourBank.";
