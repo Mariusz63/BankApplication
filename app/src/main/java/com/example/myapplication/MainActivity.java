@@ -591,7 +591,9 @@ public class MainActivity extends AppCompatActivity {
                         //TODO: complete this logic
                         break;
                     case R.id.menu_item_transaction:
-                        //TODO: complete this logic
+                        Intent transactionIntent = new Intent(MainActivity.this, TransactionActivity.class);
+                        transactionIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(transactionIntent);
                         break;
                     case R.id.menu_item_home:
                         //TODO: complete this logic
@@ -599,7 +601,8 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.menu_item_loan:
                         Intent loanIntent = new Intent(MainActivity.this, LoanActivity.class);
                         loanIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(loanIntent);                        break;
+                        startActivity(loanIntent);
+                        break;
                     case R.id.menu_item_investments:
                             Intent investmentIntent = new Intent(MainActivity.this, InvestmentActivity.class);
                         investmentIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

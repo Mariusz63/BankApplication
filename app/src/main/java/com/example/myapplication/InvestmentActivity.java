@@ -140,7 +140,9 @@ public class InvestmentActivity extends AppCompatActivity {
                     case R.id.menu_item_stats:
                         break;
                     case R.id.menu_item_transaction:
-                        //TODO: complete this logic
+                        Intent transactionIntent = new Intent(InvestmentActivity.this, InvestmentActivity.class);
+                        transactionIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(transactionIntent);
                         break;
                     case R.id.menu_item_home:
                             Intent intent = new Intent(InvestmentActivity.this, MainActivity.class);
