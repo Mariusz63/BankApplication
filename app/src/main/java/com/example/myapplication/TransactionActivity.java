@@ -225,7 +225,9 @@ public class TransactionActivity extends AppCompatActivity {
 
                 switch (menuItem.getItemId()) {
                     case R.id.menu_item_stats:
-                        //TODO: complete this logic
+                        Intent statsIntent = new Intent(TransactionActivity.this, StatsActivity.class);
+                        statsIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(statsIntent);
                         break;
                     case R.id.menu_item_transaction:
                         break;

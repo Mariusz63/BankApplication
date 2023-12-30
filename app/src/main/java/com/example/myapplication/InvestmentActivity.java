@@ -138,6 +138,9 @@ public class InvestmentActivity extends AppCompatActivity {
 
                 switch (menuItem.getItemId()) {
                     case R.id.menu_item_stats:
+                        Intent statsIntent = new Intent(InvestmentActivity.this, StatsActivity.class);
+                        statsIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(statsIntent);
                         break;
                     case R.id.menu_item_transaction:
                         Intent transactionIntent = new Intent(InvestmentActivity.this, InvestmentActivity.class);
@@ -154,7 +157,6 @@ public class InvestmentActivity extends AppCompatActivity {
                         loanIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(loanIntent);                               break;
                     case R.id.menu_item_investments:
-                        //TODO: complete this logic
                         break;
                     default:
                         break;

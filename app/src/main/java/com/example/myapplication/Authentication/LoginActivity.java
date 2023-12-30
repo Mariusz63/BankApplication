@@ -42,7 +42,7 @@ public class LoginActivity extends AppCompatActivity {
         txtLicense.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent  = new Intent(LoginActivity.this, WebsiteActivity.class);
+                Intent intent = new Intent(LoginActivity.this, WebsiteActivity.class);
                 startActivity(intent);
             }
         });
@@ -63,20 +63,19 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void initLogin(){
+    private void initLogin() {
         Log.d(TAG, "initLogin: started");
-        if(!edtTxtEmial.getText().toString().equals("")){
-            if(!edtTxtEmial.getText().toString().equals("")){
+        if (!edtTxtEmial.getText().toString().equals("")) {
+            if (!edtTxtEmial.getText().toString().equals("")) {
                 txtWarning.setVisibility(View.GONE);
-                //TODO: execute async task in here
 
                 doesEmailExist = new DoesEmailExist();
                 doesEmailExist.execute(edtTxtEmial.getText().toString());
-            }else{
+            } else {
                 txtWarning.setVisibility(View.VISIBLE);
                 txtWarning.setText("Please enter your Password");
             }
-        }else{
+        } else {
             txtWarning.setVisibility(View.VISIBLE);
             txtWarning.setText("Please enter your email address");
         }
@@ -93,8 +92,7 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    private class DoesEmailExist extends AsyncTask<String, Void, Boolean>{
-
+    private class DoesEmailExist extends AsyncTask<String, Void, Boolean> {
 
 
         @Override
@@ -136,21 +134,21 @@ public class LoginActivity extends AppCompatActivity {
         protected void onPostExecute(Boolean aBoolean) {
             super.onPostExecute(aBoolean);
 
-            if(aBoolean){
+            if (aBoolean) {
                 loginUser = new LoginUser();
                 loginUser.execute();
 
-            }else{
+            } else {
                 txtWarning.setVisibility(View.VISIBLE);
                 txtWarning.setText("There is no such user with this email address");
             }
         }
     }
 
-    private class LoginUser extends AsyncTask<Void, Void, User>{
+    private class LoginUser extends AsyncTask<Void, Void, User> {
 
         private String email;
-        private  String password;
+        private String password;
 
         @Override
         protected void onPreExecute() {
@@ -162,13 +160,13 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         protected User doInBackground(Void... voids) {
-            try{
+            try {
                 SQLiteDatabase db = databaseHelper.getReadableDatabase();
-                Cursor cursor = db.query("users", null,"email=? AND password=?" ,
-                        new String[] {email,password},null,null,null);
+                Cursor cursor = db.query("users", null, "email=? AND password=?",
+                        new String[]{email, password}, null, null, null);
 
-                if(null!=cursor){
-                    if(cursor.moveToFirst()){
+                if (null != cursor) {
+                    if (cursor.moveToFirst()) {
                         User user = new User();
                         user.set_id(cursor.getInt(cursor.getColumnIndexOrThrow("_id")));
                         user.setEmail(cursor.getString(cursor.getColumnIndexOrThrow("email")));
@@ -183,17 +181,17 @@ public class LoginActivity extends AppCompatActivity {
                         db.close();
                         return user;
 
-                    }else{
+                    } else {
                         cursor.close();
                         db.close();
                         return null;
                     }
-                }else{
+                } else {
                     db.close();
                     return null;
                 }
 
-            }catch (SQLException e){
+            } catch (SQLException e) {
                 e.printStackTrace();
                 return null;
             }
@@ -203,14 +201,14 @@ public class LoginActivity extends AppCompatActivity {
         protected void onPostExecute(User user) {
             super.onPostExecute(user);
 
-            if(null!=user){
-                Utils utils= new Utils(LoginActivity.this);
+            if (null != user) {
+                Utils utils = new Utils(LoginActivity.this);
                 utils.addUserToSharedPreferences(user);
 
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
-            }else {
+            } else {
                 txtWarning.setVisibility(View.VISIBLE);
                 txtWarning.setText("Your password is wrong");
             }
@@ -221,14 +219,14 @@ public class LoginActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
 
-        if(null!=doesEmailExist){
-            if(!doesEmailExist.isCancelled()){
+        if (null != doesEmailExist) {
+            if (!doesEmailExist.isCancelled()) {
                 doesEmailExist.cancel(true);
             }
         }
 
-        if(null!=loginUser){
-            if(!loginUser.isCancelled()){
+        if (null != loginUser) {
+            if (!loginUser.isCancelled()) {
                 loginUser.cancel(true);
             }
         }

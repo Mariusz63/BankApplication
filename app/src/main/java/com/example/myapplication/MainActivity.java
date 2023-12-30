@@ -556,6 +556,10 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
 
+                for(BarEntry e: entries){
+                    Log.d(TAG, "onPostExecute: x: "+e.getX() + " y: "+e.getY());
+                }
+
                 BarDataSet dataSet = new BarDataSet(entries, "Shopping charts");
                 dataSet.setColor(Color.RED);
                 BarData data = new BarData(dataSet);
@@ -588,7 +592,9 @@ public class MainActivity extends AppCompatActivity {
 
                 switch (menuItem.getItemId()) {
                     case R.id.menu_item_stats:
-                        //TODO: complete this logic
+                        Intent statsIntent = new Intent(MainActivity.this, StatsActivity.class);
+                        statsIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(statsIntent);
                         break;
                     case R.id.menu_item_transaction:
                         Intent transactionIntent = new Intent(MainActivity.this, TransactionActivity.class);

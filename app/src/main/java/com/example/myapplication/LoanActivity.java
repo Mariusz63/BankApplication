@@ -79,7 +79,7 @@ public class LoanActivity extends AppCompatActivity {
                             loan.setInit_date(cursor.getString(cursor.getColumnIndexOrThrow("init_date")));
                             loan.setFinish_date(cursor.getString(cursor.getColumnIndexOrThrow("finish_date")));
                             loan.setInit_amount(cursor.getDouble(cursor.getColumnIndexOrThrow("init_amount")));
-                            loan.setMonthly_roi(cursor.getDouble(cursor.getColumnIndexOrThrow("roi")));
+                            loan.setMonthly_roi(cursor.getDouble(cursor.getColumnIndexOrThrow("monthly_roi")));
                             loan.setMonthly_payment(cursor.getDouble(cursor.getColumnIndexOrThrow("monthly_payment")));
                             loan.setRemained_amount(cursor.getDouble(cursor.getColumnIndexOrThrow("remained_amount")));
                             loans.add(loan);
@@ -143,18 +143,22 @@ public class LoanActivity extends AppCompatActivity {
 
                 switch (menuItem.getItemId()) {
                     case R.id.menu_item_stats:
-                        //TODO: complete this logic
+                        Intent statsIntent = new Intent(LoanActivity.this, StatsActivity.class);
+                        statsIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(statsIntent);
                         break;
                     case R.id.menu_item_transaction:
-                        //TODO: complete this logic
+                        Intent transactionHome = new Intent(LoanActivity.this, TransactionActivity.class);
+                        transactionHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(transactionHome);
+
                         break;
                     case R.id.menu_item_home:
-                        Intent intentHome = new Intent(LoanActivity.this, InvestmentActivity.class);
+                        Intent intentHome = new Intent(LoanActivity.this, MainActivity.class);
                         intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intentHome);
                         break;
                     case R.id.menu_item_loan:
-                        //TODO: complete this logic
                         break;
                     case R.id.menu_item_investments:
                         Intent investmentIntent = new Intent(LoanActivity.this, InvestmentActivity.class);

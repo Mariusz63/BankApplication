@@ -38,9 +38,9 @@ public class TransferActivity extends AppCompatActivity {
     private DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-            calendar.set(Calendar.YEAR,year);
-            calendar.set(Calendar.MONTH,month);
-            calendar.set(Calendar.DAY_OF_MONTH,dayOfMonth);
+            calendar.set(Calendar.YEAR, year);
+            calendar.set(Calendar.MONTH, month);
+            calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
             edtTxtDate.setText(new SimpleDateFormat("yyyy-MM--dd").format(calendar.getTime()));
         }
     };
@@ -70,10 +70,10 @@ public class TransferActivity extends AppCompatActivity {
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(validateData()){
+                if (validateData()) {
                     txtWarning.setVisibility(View.GONE);
                     initAdding();
-                }else{
+                } else {
                     txtWarning.setVisibility(View.VISIBLE);
                     txtWarning.setText("Please fill all information");
                 }
@@ -81,14 +81,12 @@ public class TransferActivity extends AppCompatActivity {
         });
     }
 
-    private void initAdding(){
+    private void initAdding() {
         Log.d(TAG, "initAdding: started");
         Utils utils = new Utils(this);
         User user = utils.isUserLoggedIn();
 
-        if(user!=null){
-            //TODO: exec
-
+        if (user != null) {
             addTransaction = new AddTransaction();
             addTransaction.execute(user.get_id());
         }
@@ -98,17 +96,17 @@ public class TransferActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
 
-        if(addTransaction!=null){
-            if(!addTransaction.isCancelled()){
+        if (addTransaction != null) {
+            if (!addTransaction.isCancelled()) {
                 addTransaction.cancel(true);
             }
         }
     }
 
-    private class AddTransaction extends AsyncTask<Integer,Void, Void>{
+    private class AddTransaction extends AsyncTask<Integer, Void, Void> {
 
         private double amount;
-        private String recipient, date, description ,type;
+        private String recipient, date, description, type;
         private DatabaseHelper databaseHelper;
 
         @Override
@@ -121,13 +119,13 @@ public class TransferActivity extends AppCompatActivity {
             this.description = edtTxtDescription.getText().toString();
 
             int rbId = rgType.getCheckedRadioButtonId();
-            switch (rbId){
+            switch (rbId) {
                 case R.id.btnReceive:
                     type = "receive";
                     break;
                 case R.id.btnSend:
-                    type= "send";
-                    amount= -amount;
+                    type = "send";
+                    amount = -amount;
                     break;
                 default:
                     break;
@@ -139,49 +137,48 @@ public class TransferActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(Integer... integers) {
 
-            try{
+            try {
                 SQLiteDatabase db = databaseHelper.getWritableDatabase();
                 ContentValues values = new ContentValues();
-                values.put("amount",this.amount);
-                values.put("recipient",recipient);
-                values.put("date",date);
-                values.put("type",type);
-                values.put("description",description);
-                values.put("user_id",integers[0]);
+                values.put("amount", this.amount);
+                values.put("recipient", recipient);
+                values.put("date", date);
+                values.put("type", type);
+                values.put("description", description);
+                values.put("user_id", integers[0]);
 
-                Log.d(TAG, "doInBackground: amount: "+ this.amount);
+                Log.d(TAG, "doInBackground: amount: " + this.amount);
 
                 long id = db.insert("transactions", null, values);
-                Log.d(TAG, "doInBackground: new Transaction id"+ id);
-                if(id!=-1){
-                    Cursor cursor = db.query("users", new String[] {"remained_amount"}, "id=?", new String[] {String.valueOf(integers[0])}, null,null,null);
+                Log.d(TAG, "doInBackground: new Transaction id" + id);
+                if (id != -1) {
+                    Cursor cursor = db.query("users", new String[]{"remained_amount"}, "id=?", new String[]{String.valueOf(integers[0])}, null, null, null);
 
-                    if(cursor!=null){
-                        if(cursor.moveToFirst()){
+                    if (cursor != null) {
+                        if (cursor.moveToFirst()) {
                             double currentRemainedAmount = cursor.getDouble(cursor.getColumnIndexOrThrow("remained_amount"));
                             cursor.close();
                             ContentValues newValues = new ContentValues();
                             newValues.put("remained_amount", currentRemainedAmount + amount);
-                            int affectedRows = db.update("users", newValues, "_id=?", new String[] {String.valueOf(integers[0])});
+                            int affectedRows = db.update("users", newValues, "_id=?", new String[]{String.valueOf(integers[0])});
                             Log.d(TAG, "doInBackground: updateRows: " + affectedRows);
                             db.close();
-                        }else {
+                        } else {
                             cursor.close();
                             db.close();
-                           // return null;
+                            // return null;
                         }
-                    }else{
+                    } else {
                         db.close();
                     }
-                }else{
+                } else {
                     db.close();
                 }
 
 
-            }catch (SQLException e)
-            {
+            } catch (SQLException e) {
                 e.printStackTrace();
-               // return null;
+                // return null;
             }
 
             return null;
@@ -196,16 +193,17 @@ public class TransferActivity extends AppCompatActivity {
             startActivity(intent);
         }
     }
-    private boolean validateData(){
+
+    private boolean validateData() {
         Log.d(TAG, "validateData: started");
-        if(edtTxtAmount.getText().toString().equals("")){
+        if (edtTxtAmount.getText().toString().equals("")) {
             return false;
         }
-        if(edtTxtDate.getText().toString().equals("")){
+        if (edtTxtDate.getText().toString().equals("")) {
             return false;
         }
 
-        if(edtTxtRecipient.getText().toString().equals("")){
+        if (edtTxtRecipient.getText().toString().equals("")) {
             return false;
         }
         return true;

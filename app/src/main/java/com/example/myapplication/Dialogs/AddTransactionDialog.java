@@ -37,7 +37,6 @@ public class AddTransactionDialog extends DialogFragment {
         shopping.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: navigate user to the activity
                 Intent intent = new Intent(getActivity(), ShoppingActivity.class);
                 startActivity(intent);
             }
