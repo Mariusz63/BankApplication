@@ -17,7 +17,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         super(context, DB_Name, null, Db_Version);
     }
 
-
     @Override
     public void onCreate(SQLiteDatabase dataBase) {
         Log.d(TAG, "onCreate: started");
@@ -40,12 +39,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String createItemsTable = "CREATE TABLE items (_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, image_url TEXT,"+
                 "description TEXT)";
 
+        String createUserLoginHistoryTable = "CREATE TABLE user_login_history ( history_id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "user_id INTEGER,login_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP, login_location TEXT, FOREIGN KEY(user_id) REFERENCES users(_id))";
+
+        String createConversionTable = "CREATE TABLE conversions (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "user_id INTEGER, base_currency TEXT, converted_currency TEXT, " +
+                "amount DOUBLE, conversion_rate DOUBLE, result DOUBLE, date DATE, " +
+                "FOREIGN KEY(user_id) REFERENCES users(_id))";
+
+
         dataBase.execSQL(createUserTable);
         dataBase.execSQL(createShoppingTable);
         dataBase.execSQL(createInvestmentTable);
         dataBase.execSQL(createLoansTable);
         dataBase.execSQL(createTransactionTable);
         dataBase.execSQL(createItemsTable);
+        dataBase.execSQL(createUserLoginHistoryTable);
+        dataBase.execSQL(createConversionTable);
 
         addInitialItems(dataBase);
         addTestTransaction(dataBase);

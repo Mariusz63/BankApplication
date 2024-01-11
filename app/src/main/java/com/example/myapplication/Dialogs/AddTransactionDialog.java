@@ -14,6 +14,7 @@ import androidx.fragment.app.DialogFragment;
 
 import com.example.myapplication.AddInvestmentActivity;
 import com.example.myapplication.AddLoanActivity;
+import com.example.myapplication.ConversionActivity;
 import com.example.myapplication.R;
 import com.example.myapplication.ShoppingActivity;
 import com.example.myapplication.TransferActivity;
@@ -22,7 +23,7 @@ public class AddTransactionDialog extends DialogFragment {
 
     private static final String TAG = "AddTransactionDialog";
 
-    private RelativeLayout shopping, investment, loan, transaction;
+    private RelativeLayout shopping, investment, loan, transaction, conversion;
 
     @NonNull
     @Override
@@ -33,6 +34,7 @@ public class AddTransactionDialog extends DialogFragment {
         investment = view.findViewById(R.id.investmentRelLayout);
         loan = view.findViewById(R.id.loanRelLayout);
         transaction = view.findViewById(R.id.transactionRelLayout);
+        conversion = view.findViewById(R.id.conversionRelLayout);
 
         shopping.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,9 +68,17 @@ public class AddTransactionDialog extends DialogFragment {
             }
         });
 
+        conversion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), ConversionActivity.class);
+                startActivity(intent);
+            }
+        });
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
                 .setTitle("Add transaction")
-                .setNegativeButton("Dissmiss", new DialogInterface.OnClickListener() {
+                .setNegativeButton("Dismiss", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 

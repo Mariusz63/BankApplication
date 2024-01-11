@@ -50,6 +50,7 @@ android {
 
 
 dependencies {
+    implementation("com.google.android.gms:play-services-location:21.0.1")
     val work_version = "2.9.0"
 
     // (Java only)
@@ -79,4 +80,7 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.7")
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.5")
 }

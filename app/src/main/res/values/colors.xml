@@ -10,4 +10,5 @@
     <color name="light_grey">#73787A</color>
     <color name="light_blue">#9FD1E6</color>
     <color name="green">#3B993F</color>
+    <color name="colorPrimaryDark">#000000</color>
 </resources>

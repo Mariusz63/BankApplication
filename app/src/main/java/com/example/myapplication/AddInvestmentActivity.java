@@ -1,12 +1,5 @@
 package com.example.myapplication;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.work.Constraints;
-import androidx.work.Data;
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.WorkManager;
-import androidx.work.Worker;
-
 import android.app.DatePickerDialog;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -21,6 +14,12 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.work.Constraints;
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 
 import com.example.myapplication.Database.DatabaseHelper;
 import com.example.myapplication.Models.User;
@@ -311,6 +310,7 @@ public class AddInvestmentActivity extends AppCompatActivity {
         btnPickFinishDate = (Button) findViewById(R.id.btnPickFinishDate);
         btnAddInvestment = (Button) findViewById(R.id.btnAddInvestment);
         txtWarning = (TextView) findViewById(R.id.txtWarning);
+
     }
 }
 

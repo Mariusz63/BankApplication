@@ -108,6 +108,31 @@
 
         </RelativeLayout>
 
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/conversionRelLayout"
+            android:layout_marginTop="20dp"
+            android:layout_below="@id/transactionRelLayout">
+
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:id="@+id/conversionImage"
+                android:src="@mipmap/conversion"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@+id/conversionImage"
+                android:text="Conversion"
+                android:textSize="20dp"
+                android:textStyle="bold"/>
+
+        </RelativeLayout>
+
 
     </RelativeLayout>
 

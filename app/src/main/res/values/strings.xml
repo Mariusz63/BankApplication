@@ -1,4 +1,40 @@
 <resources>
     <string name="app_name">My Application</string>
     <string name="title_activity_register">RegisterActivity</string>
+
+    <string name="show_subtitle">Pokaż podtytuł</string>
+    <string name="hide_subtitle">Ukryj podtytuł</string>
+    <string name="subtitle_format">Liczba czujników: %d</string>
+    <string name="missing_sensor">Brak czujnika</string>
+    <string name="accelerometer_sensor_label">Akcelerometr\nx: %f m/s^2\ny: %f m/s^2\nz: %f m/s^2</string>
+    <string name="show_location">Lokacja</string>
+    <string name="location_permission_denied">Brak Permisji</string>
+    <string name="location_text">"Szerokość geograficzna: %1$.4f \n Długość geograficzna: %2$.4f \n Czas: %3$tr"</string>
+    <string name="no_location">"Brak lokacji"</string>
+    <string name="address_text">"Adres: %1$s \n Czas: %2$tr"</string>
+    <string name="service_not_available">"Usługa niedostępna"</string>
+    <string name="no_address_found">"Brak adresów"</string>
+
+    <string-array name="currencies">
+        <item>EUR</item>
+        <item>GBP</item>
+        <item>USD</item>
+        <item>DKK</item>
+        <item>SEK</item>
+        <item>AUD</item>
+        <item>CAD</item>
+        <item>JPY</item>
+    </string-array>
+
+    <string-array name="currencies2">
+        <item>USD</item>
+        <item>DKK</item>
+        <item>EUR</item>
+        <item>GBP</item>
+        <item>SEK</item>
+        <item>AUD</item>
+        <item>CAD</item>
+        <item>JPY</item>
+
+    </string-array>
 </resources>

@@ -1,9 +1,5 @@
 package com.example.myapplication;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.work.Data;
-
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -13,7 +9,13 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.myapplication.Adapters.LocationAdapter;
 import com.example.myapplication.Database.DatabaseHelper;
 import com.example.myapplication.Models.Loan;
 import com.example.myapplication.Models.Transaction;
@@ -47,11 +49,15 @@ public class StatsActivity extends AppCompatActivity {
     private  GetLoans getLoans;
     private GetTransactions getTransactions;
     Utils utils;
+    private LocationAdapter locationAdapter;
+    private RelativeLayout locationActivityRelLayout;
+    private TextView textview_location;
+    private TextView textview_address;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_stats_actvity);
+        setContentView(R.layout.activity_stats_activity);
 
         initView();
         initBottomNavView();
@@ -65,6 +71,10 @@ public class StatsActivity extends AppCompatActivity {
             getTransactions.execute(user.get_id());
             getLoans = new GetLoans();
             getLoans.execute(user.get_id());
+
+            // Fetch and display login history
+          //  GetLoginHistory getLoginHistory = new GetLoginHistory();
+           // getLoginHistory.execute(user.get_id());
         }
     }
 
@@ -319,11 +329,56 @@ public class StatsActivity extends AppCompatActivity {
         });
     }
 
+    private class GetLoginHistory extends AsyncTask<Integer, Void, ArrayList<String>> {
+
+        @Override
+        protected ArrayList<String> doInBackground(Integer... integers) {
+            try {
+                SQLiteDatabase db = databaseHelper.getReadableDatabase();
+                Cursor cursor = db.query("user_login_history", new String[]{"login_location"}, "user_id=?", new String[]{String.valueOf(integers[0])}, null, null, null);
+
+                if (cursor != null) {
+                    if (cursor.moveToFirst()) {
+                        ArrayList<String> loginHistory = new ArrayList<>();
+                        do {
+                            String location = cursor.getString(cursor.getColumnIndexOrThrow("login_location"));
+                            loginHistory.add(location);
+                            Log.d("LocationLogs", "Location: " + location); // Add this line for logging
+                        } while (cursor.moveToNext());
+
+                        cursor.close();
+                        db.close();
+                        return loginHistory;
+                    } else {
+                        cursor.close();
+                        db.close();
+                        return null;
+                    }
+                } else {
+                    db.close();
+                    return null;
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<String> loginHistory) {
+            super.onPostExecute(loginHistory);
+
+        }
+    }
+
     private void initView() {
         Log.d(TAG, "initView: started");
 
         barChart = (BarChart) findViewById(R.id.barChartActivities);
         pieChart = (PieChart) findViewById(R.id.pieChartLoans);
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottomNavView);
+       // locationActivityRelLayout = (RelativeLayout) findViewById(R.id.locationActivityRelLayout);
+       // textview_location = (TextView) findViewById(R.id.textview_location);
+       // textview_address = (TextView) findViewById(R.id.textview_address);
     }
 }
