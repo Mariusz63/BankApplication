@@ -47,21 +47,22 @@ public interface GetItem{
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Log.d(TAG, "onBindViewHolder: started");
-        holder.name.setText(items.get(position).getName());
-        Glide.with(context).asBitmap().load(items.get(position).getImage_url()).into(holder.image);
+        holder.name.setText(items.get(holder.getAdapterPosition()).getName());
+        Glide.with(context).asBitmap().load(items.get(holder.getAdapterPosition()).getImage_url()).into(holder.image);
 
         holder.parent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
                     getItem = (GetItem) dialogFragment;
-                    getItem.OnGettingItemResult(items.get(position));
-                }catch (ClassCastException e){
+                    getItem.OnGettingItemResult(items.get(holder.getAdapterPosition()));
+                } catch (ClassCastException e) {
                     e.printStackTrace();
                 }
             }
         });
     }
+
 
     @Override
     public int getItemCount() {

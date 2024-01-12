@@ -14,20 +14,21 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.myapplication.Adapters.LocationAdapter;
+import com.example.myapplication.Adapters.LoginHistoryAdapter;
 import com.example.myapplication.Database.DatabaseHelper;
 import com.example.myapplication.Models.Loan;
+import com.example.myapplication.Models.Location;
 import com.example.myapplication.Models.Transaction;
 import com.example.myapplication.Models.User;
 import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.utils.ColorTemplate;
@@ -43,13 +44,14 @@ public class StatsActivity extends AppCompatActivity {
     private static final String TAG = "StatsActivity";
 
     private BarChart barChart;
-    private PieChart pieChart;
     private BottomNavigationView bottomNavigationView;
     private DatabaseHelper databaseHelper;
     private  GetLoans getLoans;
+    private GetLoginHistory getLoginHistory;
     private GetTransactions getTransactions;
     Utils utils;
-    private LocationAdapter locationAdapter;
+    private RecyclerView loginHistoryRecView;
+    //private LocationAdapter locationAdapter;
     private RelativeLayout locationActivityRelLayout;
     private TextView textview_location;
     private TextView textview_address;
@@ -61,6 +63,9 @@ public class StatsActivity extends AppCompatActivity {
 
         initView();
         initBottomNavView();
+
+        loginHistoryRecView.setLayoutManager(new LinearLayoutManager(this));
+
         databaseHelper = new DatabaseHelper(this);
         utils = new Utils(this);
 
@@ -69,12 +74,13 @@ public class StatsActivity extends AppCompatActivity {
         if (user != null) {
             getTransactions = new GetTransactions();
             getTransactions.execute(user.get_id());
+
             getLoans = new GetLoans();
             getLoans.execute(user.get_id());
 
-            // Fetch and display login history
-          //  GetLoginHistory getLoginHistory = new GetLoginHistory();
-           // getLoginHistory.execute(user.get_id());
+            getLoginHistory = new GetLoginHistory();
+            getLoginHistory.execute(user.get_id());
+
         }
     }
 
@@ -90,6 +96,12 @@ public class StatsActivity extends AppCompatActivity {
         if(getTransactions!=null){
             if(!getTransactions.isCancelled()){
                 getTransactions.cancel(true);
+            }
+        }
+
+        if(getLoginHistory!=null){
+            if(!getLoginHistory.isCancelled()){
+                getLoginHistory.cancel(true);
             }
         }
     }
@@ -282,10 +294,6 @@ public class StatsActivity extends AppCompatActivity {
                 PieDataSet dataSet = new PieDataSet(entries,"");
                 dataSet.setColors(ColorTemplate.JOYFUL_COLORS);
                 dataSet.setSliceSpace(5f);
-                pieChart.setDrawHoleEnabled(false);
-                PieData data = new PieData(dataSet);
-                pieChart.setData(data);
-                pieChart.invalidate();
             }
         }
     }
@@ -329,21 +337,23 @@ public class StatsActivity extends AppCompatActivity {
         });
     }
 
-    private class GetLoginHistory extends AsyncTask<Integer, Void, ArrayList<String>> {
+    private class GetLoginHistory extends AsyncTask<Integer, Void, ArrayList<Location>> {
 
         @Override
-        protected ArrayList<String> doInBackground(Integer... integers) {
+        protected ArrayList<Location> doInBackground(Integer... integers) {
             try {
                 SQLiteDatabase db = databaseHelper.getReadableDatabase();
-                Cursor cursor = db.query("user_login_history", new String[]{"login_location"}, "user_id=?", new String[]{String.valueOf(integers[0])}, null, null, null);
+                Cursor cursor = db.query("user_login_history", null, null, null, null, null, null);
 
                 if (cursor != null) {
                     if (cursor.moveToFirst()) {
-                        ArrayList<String> loginHistory = new ArrayList<>();
+                        ArrayList<Location> loginHistory = new ArrayList<>();
                         do {
-                            String location = cursor.getString(cursor.getColumnIndexOrThrow("login_location"));
+                            Location location = new Location();
+                            location.setLoginLocation(cursor.getString(cursor.getColumnIndexOrThrow("login_location")));
+                            location.setLoginTime(cursor.getString(cursor.getColumnIndexOrThrow("login_time")));
                             loginHistory.add(location);
-                            Log.d("LocationLogs", "Location: " + location); // Add this line for logging
+                            Log.d("LocationLogs", "Location: " + location);
                         } while (cursor.moveToNext());
 
                         cursor.close();
@@ -365,20 +375,26 @@ public class StatsActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onPostExecute(ArrayList<String> loginHistory) {
+        protected void onPostExecute(ArrayList<Location> loginHistory) {
+
+            if (loginHistory != null) {
+                // Create an instance of LoginHistoryAdapter
+                LoginHistoryAdapter loginHistoryAdapter = new LoginHistoryAdapter(StatsActivity.this, loginHistory);
+                // Set the adapter to the RecyclerView
+                loginHistoryRecView.setAdapter(loginHistoryAdapter);
+            }
+
             super.onPostExecute(loginHistory);
 
         }
+
     }
 
     private void initView() {
         Log.d(TAG, "initView: started");
 
         barChart = (BarChart) findViewById(R.id.barChartActivities);
-        pieChart = (PieChart) findViewById(R.id.pieChartLoans);
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottomNavView);
-       // locationActivityRelLayout = (RelativeLayout) findViewById(R.id.locationActivityRelLayout);
-       // textview_location = (TextView) findViewById(R.id.textview_location);
-       // textview_address = (TextView) findViewById(R.id.textview_address);
+        loginHistoryRecView = (RecyclerView) findViewById(R.id.loginHistoryRecView);
     }
 }
