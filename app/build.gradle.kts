@@ -1,6 +1,12 @@
 plugins {
+
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+
+    id("kotlin-kapt")
+    kotlin("kapt")
+    id("com.google.dagger.hilt.android")
+
 }
 
 android {
@@ -83,4 +89,14 @@ dependencies {
 
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.7")
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.5")
+
+    //for api
+    implementation("com.google.dagger:hilt-android:2.44")
+    kapt("com.google.dagger:hilt-android-compiler:2.44")
+
+}
+
+// Allow references to generated code
+kapt {
+    correctErrorTypes = true
 }

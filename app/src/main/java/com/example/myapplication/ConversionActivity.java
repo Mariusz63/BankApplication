@@ -1,13 +1,9 @@
 package com.example.myapplication;
 
-import android.content.ContentValues;
-import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -15,13 +11,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-
-import com.example.myapplication.Database.DatabaseHelper;
-import com.example.myapplication.Models.User;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.json.JSONObject;
 
@@ -29,48 +19,28 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
-//TODO: repair this class
 public class ConversionActivity extends AppCompatActivity {
     private static final String TAG = "ConversionActivity";
 
-    String baseCurrency = "USD";
-    String convertedToCurrency = "EUR";
-    float conversionRate = 0f;
-
+    private String baseCurrency = "EUR";
+    private String convertedToCurrency = "USD";
+    private float conversionRate = 0f;
     private EditText et_firstConversion;
     private EditText et_secondConversion;
-    private Spinner spinner_firstConversion;
-    private Spinner spinner_secondConversion;
-    private BottomNavigationView bottomNavigationView;
-
-    private DatabaseHelper databaseHelper;
-    Utils utils;
+    private String APIkey = "ae63cce981362783e99a5ed7206cf14f";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d(TAG, "onCreate: started");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conversion);
 
-        initView();
-        spinnerSetup();
-        textChangedStuff();
-        initBottomNavView();
-
-        utils = new Utils(this);
-        databaseHelper = new DatabaseHelper(this);
-        
-    }
-
-    private void initView() {
-        CardView cardView = findViewById(R.id.cardViewConversion);
         et_firstConversion = findViewById(R.id.et_firstConversion);
         et_secondConversion = findViewById(R.id.et_secondConversion);
-        spinner_firstConversion = findViewById(R.id.spinner_firstConversion);
-        spinner_secondConversion = findViewById(R.id.spinner_secondConversion);
+
+        spinnerSetup();
+        textChangedStuff();
     }
 
     private void textChangedStuff() {
@@ -86,19 +56,19 @@ public class ConversionActivity extends AppCompatActivity {
 
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                Log.d(TAG, "Before Text Changed");
+                Log.d("ConversionActivity", "Before Text Changed");
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                Log.d(TAG, "OnTextChanged");
+                Log.d("ConversionActivity", "OnTextChanged");
             }
         });
     }
 
     private void getApiResult() {
         if (et_firstConversion != null && et_firstConversion.getText().length() > 0 && !et_firstConversion.getText().toString().trim().isEmpty()) {
-            String API = "https://api.ratesapi.io/api/latest?base=" + baseCurrency + "&symbols=" + convertedToCurrency;
+            String API = "https://api.exchangeratesapi.io/v1/latest?access_key="+APIkey+"&base=" + baseCurrency + "&symbols=" + convertedToCurrency;
 
             if (baseCurrency.equals(convertedToCurrency)) {
                 Toast.makeText(getApplicationContext(), "Please pick a currency to convert", Toast.LENGTH_SHORT).show();
@@ -130,7 +100,6 @@ public class ConversionActivity extends AppCompatActivity {
                                         et_secondConversion.setText(text);
 
                                         // Save conversion details to the database
-                                        saveConversionToDatabase(Float.parseFloat(et_firstConversion.getText().toString()), Float.parseFloat(text));
                                     }
                                 });
 
@@ -148,41 +117,56 @@ public class ConversionActivity extends AppCompatActivity {
         }
     }
 
-    private void saveConversionToDatabase(float originalAmount, float resultAmount) {
-        User user = getUserFromDatabase(); // Retrieve user details from the database
+/*
+    private void getApiResult() {
+        Log.d(TAG, "getApiResult: started");
+        if (et_firstConversion != null && et_firstConversion.getText().length() > 0
+                && !et_firstConversion.getText().toString().trim().isEmpty()) {
 
-        if (user != null) {
-            SQLiteDatabase db = databaseHelper.getWritableDatabase();
+            String firstCurrencyAPI = "http://api.exchangeratesapi.io/v1/latest?access_key=" + APIkey + "&symbols=" + baseCurrency + "&format=1";
+            String secondCurrencyAPI = "http://api.exchangeratesapi.io/v1/latest?access_key=" + APIkey + "&symbols=" + convertedToCurrency + "&format=1";
 
-            ContentValues values = new ContentValues();
-            values.put("user_id", user.get_id());
-            values.put("base_currency", baseCurrency);
-            values.put("converted_currency", convertedToCurrency);
-            values.put("amount", originalAmount);
-            values.put("conversion_rate", conversionRate);
-            values.put("result", resultAmount);
-            values.put("date", getCurrentDate());
+            if (baseCurrency.equals(convertedToCurrency)) {
+                Toast.makeText(getApplicationContext(), "Please pick a currency to convert", Toast.LENGTH_SHORT).show();
+            } else {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            String firstCurrencyResult = new URL(firstCurrencyAPI).openStream().toString();
+                            JSONObject firstCurrencyJsonObject = new JSONObject(firstCurrencyResult);
+                            float firstCurrencyConversionRate = Float.parseFloat(firstCurrencyJsonObject.getJSONObject("rates")
+                                    .getString(convertedToCurrency));
 
-            long newRowId = db.insert("conversions", null, values);
+                            Log.d("getApiResult", "First Currency: " + String.valueOf(firstCurrencyConversionRate));
+                            Log.d("getApiResult", firstCurrencyResult);
 
-            Log.d(TAG, "Conversion saved to database. Row ID: " + newRowId);
+                            // Now download data for the second currency
+                            String secondCurrencyResult = new URL(secondCurrencyAPI).openStream().toString();
+                            JSONObject secondCurrencyJsonObject = new JSONObject(secondCurrencyResult);
+                            float secondCurrencyConversionRate = Float.parseFloat(secondCurrencyJsonObject.getJSONObject("rates")
+                                    .getString(baseCurrency));
 
-            db.close();
+                            Log.d("getApiResult", "Second Currency: " + String.valueOf(secondCurrencyConversionRate));
+                            Log.d("getApiResult", secondCurrencyResult);
+
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    // Process the data as needed
+                                }
+                            });
+
+                        } catch (Exception e) {
+                            Log.e("getApiResult", String.valueOf(e));
+                        }
+                    }
+                }).start();
+            }
         }
     }
+*/
 
-    private User getUserFromDatabase() {
-        // Implement code to retrieve the logged-in user from the users table
-        // Return the User object or null if user not found
-        User user = utils.isUserLoggedIn();
-        return user;
-    }
-
-    private String getCurrentDate() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-        Date date = new Date();
-        return dateFormat.format(date);
-    }
 
     private void spinnerSetup() {
         Spinner spinner = findViewById(R.id.spinner_firstConversion);
@@ -230,47 +214,4 @@ public class ConversionActivity extends AppCompatActivity {
             }
         });
     }
-
-    private void initBottomNavView() {
-        Log.d(TAG, "initBottomNavView: started");
-        bottomNavigationView.setSelectedItemId(R.id.menu_item_home);
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-
-                switch (menuItem.getItemId()) {
-                    case R.id.menu_item_stats:
-                        Intent statsIntent = new Intent(ConversionActivity.this, StatsActivity.class);
-                        statsIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(statsIntent);
-                        break;
-                    case R.id.menu_item_transaction:
-                        Intent transactionIntent = new Intent(ConversionActivity.this, TransactionActivity.class);
-                        transactionIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(transactionIntent);
-                        break;
-                    case R.id.menu_item_home:
-                        Intent homeIntent = new Intent(ConversionActivity.this, MainActivity.class);
-                        homeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(homeIntent);
-                        break;
-                    case R.id.menu_item_loan:
-                        Intent loanIntent = new Intent(ConversionActivity.this, LoanActivity.class);
-                        loanIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(loanIntent);
-                        break;
-                    case R.id.menu_item_investments:
-                        Intent investmentIntent = new Intent(ConversionActivity.this, InvestmentActivity.class);
-                        investmentIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(investmentIntent);
-                        break;
-                    default:
-                        break;
-                }
-
-                return false;
-            }
-        });
-    }
-
 }
